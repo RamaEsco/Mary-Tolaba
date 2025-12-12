@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#27b4aa">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Admin - Mary Tolaba</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background-color: #27b4aa;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+            min-width: 100px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:hover {
+            background-color: #1e9c92;
+        }
+
+        .btn-eliminar {
+            background-color: #e74c3c;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+            }
+            
+            th, td {
+                min-width: 120px;
+                word-break: break-word;
+            }
+            
+            .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+                width: 100%;
+            }
+            
+            #abrirModal {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .container > div {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        /* Estilos del Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .modal-contenido {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 1.5rem;
+            border-radius: 8px;
+            width: 95%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cerrar-modal {
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+
+        .cerrar-modal:hover {
+            color: #000;
+        }
+
+        /* Estilos para el modal de confirmación de eliminación */
+        .confirmacion-eliminar {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .confirmacion-botones {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-cancelar {
+            background-color: #95a5a6;
+        }
+        
+        .btn-cancelar:hover {
+            background-color: #7f8c8d;
+        }
+        
+        /* Estilos para la barra de búsqueda */
+        .search-container {
+            display: flex;
+            margin: 1.5rem 0;
+            gap: 0.5rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #27b4aa;
+            box-shadow: 0 0 0 2px rgba(39, 180, 170, 0.2);
+        }
+        
+        .search-btn {
+            background-color: #27b4aa;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .search-btn:hover {
+            background-color: #1e9c92;
+        }
+
+        @media (max-width: 768px) {
+            .modal-contenido {
+                margin: 1rem auto;
+                width: 95%;
+                padding: 1rem;
+                max-height: 90vh;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            input[type="text"],
+            input[type="number"],
+            select,
+            textarea {
+                font-size: 16px; /* Evita el zoom en iOS */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>Panel de Administración</h1>
+            <button id="abrirModal" class="btn">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
+        
+        <div id="productosContainer">
+            <div class="search-container">
+                <input type="text" id="buscarProducto" class="search-input" placeholder="Buscar productos...">
+                <button id="btnBuscar" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productosLista">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para editar producto -->
+        <div id="modalEditar" class="modal">
+            <div class="modal-contenido">
+                <div class="modal-encabezado">
+                    <h2>Editar Producto</h2>
+                    <span class="cerrar-modal" data-modal="modalEditar">&times;</span>
+                </div>
+                <form id="editarProductoForm">
+                    <div class="form-group">
+                        <label for="editarCategoria">Categoría</label>
+                        <select id="editarCategoria" required>
+                            <option value="">Seleccione una categoría</option>
+                            <option value="ropa">Ropa</option>
+                            <option value="perfume">Perfume</option>
+                            <option value="hermeticos">Herméticos</option>
+                            <option value="bisuteria">Bisutería</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editarNombre">Nombre del Producto</label>
+                        <input type="text" id="editarNombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editarPrecio">Precio</label>
+                        <input type="number" id="editarPrecio" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editarDescripcion">Descripción</label>
+                        <textarea id="editarDescripcion" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editarImagen">Imagen del Producto (opcional)</label>
+                        <input type="file" id="editarImagen" accept="image/*">
+                        <div id="editarVistaPrevia" style="margin-top: 10px; display: none;">
+                            <img id="editarImagenPreview" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="editarProductoId">
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Actualizar Producto
+                        </button>
+                        <button type="button" class="btn" onclick="cerrarModal('modalEditar')">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para nuevo producto -->
+        <div id="modalNuevo" class="modal">
+            <div class="modal-contenido" style="max-width: 500px;">
+                <div class="modal-encabezado">
+                    <h2>Nuevo Producto</h2>
+                    <span class="cerrar-modal" data-modal="modalNuevo">&times;</span>
+                </div>
+                <form id="productoForm" style="padding: 0 0.5rem;">
+                    <!-- Imagen del producto -->
+                    <div class="form-group" style="margin-bottom: 2rem; text-align: center;">
+                        <div id="upload-area" style="width: 200px; height: 200px; margin: 0 auto; border: 2px dashed #ccc; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; background-color: #f9f9f9;">
+                            <input type="file" id="imagen" accept="image/*" required style="display: none;">
+                            <div id="vista-previa" style="display: none; width: 100%; height: 100%; position: relative;">
+                                <img id="imagen-preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">
+                            </div>
+                            <div id="upload-placeholder" style="font-size: 48px; color: #27b4aa; line-height: 1;">+</div>
+                        </div>
+                    </div>
+
+                    <!-- Campos del formulario -->
+                    <div class="form-group">
+                        <label for="categoria" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #444;">Categoría</label>
+                        <select id="categoria" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; background-color: #f9f9f9; transition: border-color 0.3s ease;">
+                            <option value="" disabled selected>Seleccione una categoría</option>
+                            <option value="ropa">Ropa</option>
+                            <option value="perfume">Perfume</option>
+                            <option value="hermeticos">Herméticos</option>
+                            <option value="bisuteria">Bisutería</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="margin: 1.5rem 0;">
+                        <label for="nombre" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #444;">Título del Producto</label>
+                        <input type="text" id="nombre" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; transition: border-color 0.3s ease;" placeholder="Ej: Camiseta básica blanca">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="descripcion" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #444;">Descripción</label>
+                        <textarea id="descripcion" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; resize: vertical; min-height: 100px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s ease;" placeholder="Describe el producto..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="precio" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #444;">Precio</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <span style="position: absolute; left: 12px; color: #666;">$</span>
+                            <input type="number" id="precio" min="0" step="0.01" required style="width: 100%; padding: 0.75rem 0.75rem 0.75rem 30px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease;" placeholder="0.00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; justify-content: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                        <button type="submit" class="btn" style="background-color: #27b4aa; width: 120px; padding: 0.6rem 0;">
+                            Subir
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="confirmarEliminarModal" class="modal">
+        <div class="modal-contenido" style="max-width: 300px;">
+            <div class="confirmacion-eliminar">
+                <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">¿Deseas eliminar este producto?</p>
+                <div class="confirmacion-botones">
+                    <button id="btnCancelarEliminar" class="btn btn-cancelar">
+                        No
+                    </button>
+                    <button id="btnConfirmarEliminar" class="btn btn-eliminar">
+                        Sí
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Funciones para manejar modales
+        function abrirModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function cerrarModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Manejar clic en botón de nuevo producto
+        document.getElementById('abrirModal').addEventListener('click', () => {
+            abrirModal('modalNuevo');
+        });
+        
+        // Manejar cierre de modales
+        document.querySelectorAll('.cerrar-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modalId = e.target.getAttribute('data-modal');
+                cerrarModal(modalId);
+            });
+        });
+        
+        // Cerrar al hacer clic fuera del modal
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Cerrar con la tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+        });
+        // Configuración de ImgBB
+        const IMGBB_API_KEY = '9b9d3117702c06928b41f8321a9138ad';
+        
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://vxxjedxgodklduvypwsc.supabase.co/rest/v1';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4eGplZHhnb2RrbGR1dnlwd3NjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NDU1MTUsImV4cCI6MjA4MTAyMTUxNX0.kr_VCVlRRd_kVaUZyPr5Ar6S9y0_BVxU_fanb7k1DSo';
+        
+        // Elementos del DOM
+        const productoForm = document.getElementById('productoForm');
+        const productosLista = document.getElementById('productosLista');
+        const btnCancelarEdicion = document.getElementById('btnCancelarEdicion');
+        const inputImagen = document.getElementById('imagen');
+        const vistaPrevia = document.getElementById('vista-previa');
+        const imagenPreview = document.getElementById('imagen-preview');
+        
+        let productos = [];
+        let productoEditando = null;
+        let imagenActual = null; // Para manejar la imagen actual al editar
+        
+        // Configuración de headers para las peticiones
+        const headers = {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=representation'  // Para que retorne el registro insertado/actualizado
+        };
+        
+        // Función para mostrar/ocultar botón de cancelar edición
+        function toggleBotonCancelar(mostrar) {
+            btnCancelarEdicion.style.display = mostrar ? 'block' : 'none';
+        }
+        
+        // Función para mostrar mensajes al usuario
+        function mostrarMensaje(mensaje, tipo = 'success') {
+            const mensajeElemento = document.createElement('div');
+            mensajeElemento.className = `mensaje ${tipo}`;
+            mensajeElemento.textContent = mensaje;
+            
+            // Insertar el mensaje después del título
+            const titulo = document.querySelector('h1');
+            titulo.after(mensajeElemento);
+            
+            // Eliminar el mensaje después de 5 segundos
+            setTimeout(() => {
+                mensajeElemento.remove();
+            }, 5000);
+        }
+        
+        // Función para formatear el precio
+        function formatearPrecio(precio) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS',
+                minimumFractionDigits: 2
+            }).format(precio);
+        }
+        
+        // Función para subir imagen a ImgBB
+        async function subirImagenABlob(archivo) {
+            try {
+                const formData = new FormData();
+                formData.append('key', IMGBB_API_KEY);
+                formData.append('image', archivo);
+
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error?.message || 'Error al subir la imagen');
+                }
+
+                return data.data.url; // Retorna la URL de la imagen en ImgBB
+            } catch (error) {
+                console.error('Error al subir la imagen:', error);
+                throw new Error('No se pudo subir la imagen. Por favor, inténtalo de nuevo.');
+            }
+        }
+        
+        // Configurar vista previa de la imagen
+        function configurarVistaPrevia() {
+            const uploadArea = document.getElementById('upload-area');
+            const uploadPlaceholder = document.getElementById('upload-placeholder');
+            
+            // Manejar clic en el área de carga
+            uploadArea.addEventListener('click', function(e) {
+                inputImagen.click();
+            });
+            
+            // Manejar cambio de archivo
+            inputImagen.addEventListener('change', function(e) {
+                const archivo = e.target.files[0];
+                if (archivo) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagenPreview.src = e.target.result;
+                        vistaPrevia.style.display = 'block';
+                        uploadPlaceholder.style.display = 'none';
+                        
+                        // Hacer que la imagen sea clickable para cambiar
+                        imagenPreview.onclick = function(e) {
+                            e.stopPropagation();
+                            inputImagen.click();
+                        };
+                    }
+                    reader.readAsDataURL(archivo);
+                }
+            });
+        }
+
+        // Función para cargar los productos desde la API
+        async function cargarProductos() {
+            try {
+                productosLista.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Cargando productos...</td></tr>';
+                
+                const response = await fetch(`${SUPABASE_URL}/productos?select=*&order=created_at.desc`, {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Error al cargar los productos');
+                }
+                
+                productos = await response.json();
+                mostrarProductos();
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+                mostrarMensaje('Error al cargar los productos: ' + (error.message || 'Intente recargar la página'), 'error');
+                productosLista.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #e74c3c;">
+                            Error al cargar los productos. Por favor, intente recargar la página.
+                        </td>
+                    </tr>`;
+            }
+        }
+        
+        // Función para mostrar los productos en la tabla
+        function mostrarProductos() {
+            if (productos.length === 0) {
+                productosLista.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">No hay productos registrados</td>
+                    </tr>`;
+                return;
+            }
+            
+            productosLista.innerHTML = '';
+            
+            productos.forEach(producto => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${producto.categoria}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            ${producto.imagen ? `<img src="${producto.imagen}" alt="${producto.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : ''}
+                            <span>${producto.nombre}</span>
+                        </div>
+                    </td>
+                    <td>${formatearPrecio(producto.precio)}</td>
+                    <td>${producto.descripcion || '-'}</td>
+                    <td class="actions">
+                        <button onclick="editarProducto(${JSON.stringify(producto).replace(/"/g, '&quot;')})" class="btn btn-sm" style="background-color: #f39c12;">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button onclick="eliminarProducto('${producto.id}')" class="btn btn-sm btn-eliminar">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </td>
+                `;
+                productosLista.appendChild(tr);
+            });
+        }
+        
+        // Función para manejar el envío del formulario
+        async function manejarEnvioFormulario(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const botonSubmit = form.querySelector('button[type="submit"]');
+            const textoOriginal = botonSubmit.innerHTML;
+            const modal = form.closest('.modal');
+            
+            try {
+                // Deshabilitar el botón y mostrar estado de carga
+                botonSubmit.disabled = true;
+                botonSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+                
+                // Obtener valores del formulario
+                const categoria = document.getElementById('categoria').value;
+                const nombre = document.getElementById('nombre').value;
+                const precio = parseFloat(document.getElementById('precio').value);
+                const descripcion = document.getElementById('descripcion').value;
+                const archivoImagen = inputImagen.files[0];
+                
+                // Validaciones
+                if (!categoria || !nombre || isNaN(precio) || (!archivoImagen && !imagenActual && !productoEditando)) {
+                    throw new Error('Por favor complete todos los campos correctamente');
+                }
+                
+                let urlImagen = imagenActual;
+                
+                // Si hay una nueva imagen, subirla a ImgBB
+                if (archivoImagen) {
+                    mostrarMensaje('Subiendo imagen, por favor espere...', 'info');
+                    urlImagen = await subirImagenABlob(archivoImagen);
+                }
+                
+                // Crear el objeto del producto
+                const producto = {
+                    categoria,
+                    nombre,
+                    precio,
+                    descripcion,
+                    imagen: urlImagen,
+                    activo: true,
+                    fecha_creacion: new Date().toISOString()
+                };
+                
+                if (productoEditando) {
+                    // Actualizar producto existente
+                    const response = await fetch(`${SUPABASE_URL}/productos?id=eq.${productoEditando.id}`, {
+                        method: 'PATCH',
+                        headers: headers,
+                        body: JSON.stringify(producto)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || 'Error al actualizar el producto');
+                    }
+                    
+                    mostrarMensaje('Producto actualizado correctamente');
+                } else {
+                    // Crear nuevo producto
+                    const response = await fetch(`${SUPABASE_URL}/productos`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify([producto])
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || 'Error al crear el producto');
+                    }
+                    
+                    mostrarMensaje('Producto creado correctamente');
+                }
+                
+                // Limpiar el formulario después de guardar
+                form.reset();
+                document.getElementById('vista-previa').style.display = 'none';
+                
+                // Cerrar el modal antes de recargar los productos
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                
+                // Recargar la lista de productos
+                await cargarProductos();
+                
+            } catch (error) {
+                console.error('Error al guardar el producto:', error);
+                mostrarMensaje(error.message || 'Error al guardar el producto', 'error');
+            } finally {
+                // Restaurar el botón
+                const botonSubmit = form.querySelector('button[type="submit"]');
+                if (botonSubmit) {
+                    botonSubmit.disabled = false;
+                    botonSubmit.innerHTML = productoEditando 
+                        ? '<i class="fas fa-sync-alt"></i> Actualizar Producto' 
+                        : '<i class="fas fa-save"></i> Guardar Producto';
+                }
+                
+                // Resetear el estado de edición si estamos en modo edición
+                if (productoEditando) {
+                    productoEditando = null;
+                    imagenActual = null;
+                }
+            }
+        }
+        
+        // Variables para búsqueda
+        let productoAEliminarId = null;
+        
+        // Inicializar búsqueda
+        document.addEventListener('DOMContentLoaded', () => {
+            const buscarInput = document.getElementById('buscarProducto');
+            const btnBuscar = document.getElementById('btnBuscar');
+            
+            // Buscar al hacer clic en el botón
+            btnBuscar.addEventListener('click', buscarProductos);
+            
+            // Buscar al presionar Enter
+            buscarInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    buscarProductos();
+                }
+            });
+            
+            // Cargar productos al inicio
+            cargarProductos();
+        });
+        
+        // Función para buscar productos
+        function buscarProductos() {
+            const termino = document.getElementById('buscarProducto').value.toLowerCase();
+            const filas = document.querySelectorAll('#productosLista tr');
+            
+            filas.forEach(fila => {
+                const textoFila = fila.textContent.toLowerCase();
+                fila.style.display = textoFila.includes(termino) ? '' : 'none';
+            });
+        }
+        const confirmarEliminarModal = document.getElementById('confirmarEliminarModal');
+        const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+        const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
+
+        // Manejadores de eventos para el modal de confirmación
+        btnConfirmarEliminar.addEventListener('click', async () => {
+            if (!productoAEliminarId) return;
+            
+            btnConfirmarEliminar.disabled = true;
+            btnConfirmarEliminar.innerHTML = 'Eliminando...';
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/productos?id=eq.${productoAEliminarId}`, {
+                    method: 'DELETE',
+                    headers: headers
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Error al eliminar el producto');
+                }
+                
+                mostrarMensaje('Producto eliminado correctamente');
+                await cargarProductos();
+                cerrarModal('confirmarEliminarModal');
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Error: ' + (error.message || 'No se pudo eliminar el producto'), 'error');
+            } finally {
+                btnConfirmarEliminar.disabled = false;
+                btnConfirmarEliminar.innerHTML = 'Sí';
+                productoAEliminarId = null;
+            }
+        });
+        
+        btnCancelarEliminar.addEventListener('click', () => {
+            cerrarModal('confirmarEliminarModal');
+            productoAEliminarId = null;
+        });
+        
+        // Función para eliminar un producto
+        window.eliminarProducto = function(id) {
+            productoAEliminarId = id;
+            abrirModal('confirmarEliminarModal');
+        };
+        
+        // Función para editar un producto
+        window.editarProducto = function(producto) {
+            // Llenar el formulario de edición
+            document.getElementById('editarCategoria').value = producto.categoria || '';
+            document.getElementById('editarNombre').value = producto.nombre || '';
+            document.getElementById('editarPrecio').value = producto.precio || '';
+            document.getElementById('editarDescripcion').value = producto.descripcion || '';
+            document.getElementById('editarProductoId').value = producto.id;
+            
+            // Mostrar la imagen actual si existe
+            const editarVistaPrevia = document.getElementById('editarVistaPrevia');
+            const editarImagenPreview = document.getElementById('editarImagenPreview');
+            if (producto.imagen) {
+                editarImagenPreview.src = producto.imagen;
+                editarVistaPrevia.style.display = 'block';
+            } else {
+                editarVistaPrevia.style.display = 'none';
+            }
+            
+            // Abrir el modal de edición
+            abrirModal('modalEditar');
+        };
+        
+        // Función para limpiar el formulario
+        window.limpiarFormulario = function() {
+            productoForm.reset();
+            productoEditando = null;
+            imagenActual = null;
+            vistaPrevia.style.display = 'none';
+            toggleBotonCancelar(false);
+        };
+        
+        // Configurar vista previa para la imagen de edición
+        function configurarVistaPreviaEdicion() {
+            const inputImagen = document.getElementById('editarImagen');
+            const vistaPrevia = document.getElementById('editarVistaPrevia');
+            const imagenPreview = document.getElementById('editarImagenPreview');
+            
+            inputImagen.addEventListener('change', function(e) {
+                const archivo = e.target.files[0];
+                if (archivo) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagenPreview.src = e.target.result;
+                        vistaPrevia.style.display = 'block';
+                    }
+                    reader.readAsDataURL(archivo);
+                } else {
+                    vistaPrevia.style.display = 'none';
+                }
+            });
+        }
+
+        // Manejar envío del formulario de edición
+        document.getElementById('editarProductoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const botonSubmit = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = botonSubmit.innerHTML;
+            botonSubmit.disabled = true;
+            botonSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            
+            try {
+                const productoId = document.getElementById('editarProductoId').value;
+                const categoria = document.getElementById('editarCategoria').value;
+                const nombre = document.getElementById('editarNombre').value;
+                const precio = parseFloat(document.getElementById('editarPrecio').value);
+                const descripcion = document.getElementById('editarDescripcion').value;
+                const archivoImagen = document.getElementById('editarImagen').files[0];
+                
+                if (!categoria || !nombre || isNaN(precio)) {
+                    throw new Error('Por favor complete todos los campos correctamente');
+                }
+                
+                let urlImagen = document.getElementById('editarImagenPreview').src;
+                
+                // Si hay una nueva imagen, subirla a ImgBB
+                if (archivoImagen) {
+                    mostrarMensaje('Subiendo imagen, por favor espere...', 'info');
+                    urlImagen = await subirImagenABlob(archivoImagen);
+                } else if (urlImagen.includes('blob:')) {
+                    // Si hay una imagen precargada pero no se seleccionó una nueva, mantener la anterior
+                    const productoOriginal = productos.find(p => p.id === productoId);
+                    urlImagen = productoOriginal?.imagen || '';
+                }
+                
+                // Actualizar el producto
+                const response = await fetch(`${SUPABASE_URL}/productos?id=eq.${productoId}`, {
+                    method: 'PATCH',
+                    headers: headers,
+                    body: JSON.stringify({
+                        categoria,
+                        nombre,
+                        precio,
+                        descripcion,
+                        imagen: urlImagen
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Error al actualizar el producto');
+                }
+                
+                mostrarMensaje('Producto actualizado correctamente');
+                await cargarProductos();
+                cerrarModal('modalEditar');
+                
+            } catch (error) {
+                console.error('Error al actualizar el producto:', error);
+                mostrarMensaje(error.message || 'Error al actualizar el producto', 'error');
+            } finally {
+                botonSubmit.disabled = false;
+                botonSubmit.innerHTML = textoOriginal;
+            }
+        });
+        
+        // Event Listeners
+        productoForm.removeEventListener('submit', manejarEnvioFormulario);
+        productoForm.addEventListener('submit', manejarEnvioFormulario);
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar productos al iniciar
+            cargarProductos();
+            
+            // Configurar eventos
+            configurarVistaPrevia();
+            configurarVistaPreviaEdicion();
+        });
+    </script>
+    
+    <style>
+        /* Estilos para el input de archivo */
+        #upload-area {
+            transition: all 0.3s ease;
+        }
+        
+        #upload-area:hover {
+            border-color: #27b4aa;
+            background-color: #f9f9f9;
+        }
+        
+        #upload-area.dragover {
+            background-color: #f0f9f8;
+            border-color: #27b4aa;
+            transform: scale(1.01);
+        }
+        
+        /* Estilos para los mensajes */
+        .mensaje {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        
+        .mensaje.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .mensaje.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</body>
+</html>
